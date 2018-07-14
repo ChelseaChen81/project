@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>201803JS</title>
+</head>
+<body>
+
+</body>
+</html>
+<script>
+    var str = "www.zhufengpeixun.com?course1=JS&course2=JQ&course3=vue&course4=react&course5=node";
+
+    function change(str) {
+        var obj = {};
+        var reg = /[?&](\w+)=(\w+)/g;
+        str.replace(reg, (...args) => {
+            obj[args[1]] = args[2];
+        });
+        return obj;
+    }
+
+    console.log(change(str));
+
+    Function.prototype.myBind = function () {
+        var that = this;
+        var arg = arguments;
+        var ary1 = [].splice(arg, 0);
+        var context = arg[0] || window;
+        return function () {
+            var ary2 = [].splice(arguments, 0);
+            var ary3 = ary1.concat(ary2);
+            that.apply(context, ary3);
+        }
+    };
+
+    function fn1() {
+        console.log("1");
+        console.log(this);
+    }
+
+    function fn2() {
+        console.log("2");
+        console.log(this);
+    }
+
+    var fn3 = fn1.myBind(fn2, 3, 4, 5);
+    console.log(fn3.call(4, 5, 6));
+
+    var ary = [1, 2, 3, 4, 5];
+    Array.prototype.myMap = function (callback, context) {
+        context = context || window;
+        var ary = [];
+        for (var i = 0; i < this.length; i++) {
+            var reg = callback.call(context, this[i], i, this);
+            ary.push(reg);
+        }
+        return ary;
+    }
+
+    var result = ary.myMap((item, index) => {
+        return item * 2;
+    })
+    console.log(result);
+
+    var str="2018-12-24 12:12:12";
+    var temp="{0}年{1}月{2}日";
+   String.prototype.myFormat=function(temp){
+        temp=temp||"{0}年{1}月{2}日{3}时{4}分{5}秒";
+        var arr=this.match(/\d+/g);
+        var reg=/\{(\d)\}/g;
+        temp=temp.replace(reg,($0,$1)=>{
+           return arr[$1];
+        })
+        return temp;
+
+    }
+
+    console.log(str.myFormat(temp));
+
+    var str = "aassdfgergregeger";
+    var obj = {};
+
+    for (var i = 0; i < str.length; i++) {
+        var cur = str[i];
+        if (obj[cur]) {
+            obj[cur]++;
+        } else {
+            obj[cur] = 1;
+        }
+    }
+    console.log(obj);
+    var max = 0;
+    var maxStr = "";
+    for (var key in obj) {
+        if (obj[key] > max) {
+            max = obj[key];
+            maxStr = key;
+        } else if (obj[key] === max) {
+            maxStr += "," + key;
+        }
+    }
+    console.log(max, maxStr);
+
+    var str = "aabbccc";
+    var ary = str.split("");
+    ary.sort((a, b) => {
+        return a - b;
+    });
+    str = ary.join("");
+    var reg = /(\w)\1+/g;
+    var max = 0;
+    var maxStr = "";
+    str.replace(reg, ($0, $1) => {
+        if ($0.length > max) {
+            max = $0.length;
+            maxStr = $1;
+        } else if ($0.length === max) {
+            maxStr += "," + $1;
+        }
+    });
+    console.log(max, maxStr);
+
+</script>
